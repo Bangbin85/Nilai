@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Info Sekolah & Guru</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Style untuk judul dan ikon home */
+        .title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .title-wrapper h1 {
+            margin: 0;
+            padding: 0;
+            border-bottom: none;
+        }
+        .home-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            transition: all 0.2s ease-in-out;
+            flex-shrink: 0;
+            text-decoration: none;
+        }
+        .home-link:hover {
+            transform: scale(1.15);
+            color: var(--primary-color);
+        }
+        .home-link svg {
+            width: 32px;
+            height: 32px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-wrapper">
+             <a href="Rapor.html" class="home-link" title="Kembali ke Menu Utama">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" />
+                </svg>
+            </a>
+            <h1>Informasi Sekolah, Guru, dan Kelas</h1>
+        </div>
+        <p>Isi semua data di bawah ini. Data ini akan digunakan sebagai kop dan informasi dasar pada rapor dan legger.</p>
+
+        <form id="formInfoDasar" class="grid-2">
+            <div>
+                <label for="namaSekolah">Nama Sekolah</label>
+                <input type="text" id="namaSekolah" required>
+
+                <label for="alamat">Alamat Sekolah</label>
+                <textarea id="alamat"></textarea>
+
+                <label for="kepalaSekolah">Nama Kepala Sekolah</label>
+                <input type="text" id="kepalaSekolah">
+
+                <label for="nipKepsek">NIP Kepala Sekolah</label>
+                <input type="text" id="nipKepsek">
+            </div>
+
+            <div>
+                <label for="namaGuru">Nama Guru Kelas</label>
+                <input type="text" id="namaGuru" required>
+
+                <label for="nipGuru">NIP Guru Kelas</label>
+                <input type="text" id="nipGuru">
+
+                <label for="kelas">Kelas</label>
+                <input type="text" id="kelas" placeholder="Contoh: IV A">
+
+                <label for="fase">Fase</label>
+                <input type="text" id="fase" placeholder="Contoh: B">
+
+                <label for="semester">Semester</label>
+                <select id="semester">
+                    <option value="1">1 (Ganjil)</option>
+                    <option value="2">2 (Genap)</option>
+                </select>
+
+                <label for="tahunAjaran">Tahun Ajaran</label>
+                <input type="text" id="tahunAjaran" placeholder="Contoh: 2023/2024" required>
+            </div>
+
+            <div style="grid-column: 1 / -1;">
+                 <button type="submit">Simpan Data</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dataRapor = loadData();
+            const form = document.getElementById('formInfoDasar');
+
+            // Fungsi untuk mengisi form dengan data dari LocalStorage
+            const populateForm = () => {
+                const info = dataRapor.infoDasar;
+                document.getElementById('namaSekolah').value = info.namaSekolah || '';
+                document.getElementById('alamat').value = info.alamat || '';
+                document.getElementById('kepalaSekolah').value = info.kepalaSekolah || '';
+                document.getElementById('nipKepsek').value = info.nipKepsek || '';
+                document.getElementById('namaGuru').value = info.namaGuru || '';
+                document.getElementById('nipGuru').value = info.nipGuru || '';
+                document.getElementById('kelas').value = info.kelas || '';
+                document.getElementById('fase').value = info.fase || '';
+                document.getElementById('semester').value = info.semester || '1';
+                document.getElementById('tahunAjaran').value = info.tahunAjaran || '';
+            };
+
+            // Event listener untuk menyimpan data saat form disubmit
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault(); // Mencegah form mengirim data ke server
+
+                // Ambil semua nilai dari form dan masukkan ke objek dataRapor
+                dataRapor.infoDasar = {
+                    namaSekolah: document.getElementById('namaSekolah').value,
+                    alamat: document.getElementById('alamat').value,
+                    kepalaSekolah: document.getElementById('kepalaSekolah').value,
+                    nipKepsek: document.getElementById('nipKepsek').value,
+                    namaGuru: document.getElementById('namaGuru').value,
+                    nipGuru: document.getElementById('nipGuru').value,
+                    kelas: document.getElementById('kelas').value,
+                    fase: document.getElementById('fase').value,
+                    semester: document.getElementById('semester').value,
+                    tahunAjaran: document.getElementById('tahunAjaran').value,
+                };
+
+                // Simpan objek dataRapor yang sudah diperbarui ke LocalStorage
+                saveData(dataRapor);
+
+                await showModal('Tersimpan!', 'Data informasi dasar berhasil disimpan!');
+            });
+
+            // Panggil fungsi untuk mengisi form saat halaman pertama kali dimuat
+            populateForm();
+        });
+    </script>
+</body>
+</html>

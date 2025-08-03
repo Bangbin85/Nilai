@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cetak Legger Nilai</title>
+    <link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .title-wrapper h1 {
+            margin: 0;
+            padding: 0;
+            border-bottom: none;
+        }
+        .home-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            transition: all 0.2s ease-in-out;
+            flex-shrink: 0;
+            text-decoration: none;
+        }
+        .home-link:hover {
+            transform: scale(1.15);
+            color: var(--primary-color);
+        }
+        .home-link svg {
+            width: 32px;
+            height: 32px;
+        }
+        .container {
+            max-width: 98%;
+        }
+        .table-wrapper {
+            width: 100%;
+            max-height: 75vh;
+            overflow: auto;
+            border: 1px solid #ddd;
+        }
+        table {
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+        th, td {
+            text-align: center;
+            padding: 8px 10px;
+            border: 1px solid var(--border-color);
+            vertical-align: middle;
+            font-size: 0.9em;
+        }
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: var(--primary-color);
+            color: white;
+            z-index: 3;
+        }
+        .col-no, .col-nama {
+            position: sticky;
+            left: 0;
+            background: white;
+            z-index: 1;
+        }
+        .col-nama {
+            left: 50px;
+            text-align: left;
+            white-space: normal;
+            min-width: 250px;
+            border-right: 2px solid #ccc;
+        }
+        thead .col-no, thead .col-nama {
+            z-index: 4;
+        }
+        tbody tr:nth-child(even) td.col-no,
+        tbody tr:nth-child(even) td.col-nama {
+             background-color: #f8f9fa;
+        }
+        td[contenteditable="true"] {
+            background-color: #fef9e7;
+            cursor: cell;
+        }
+        td input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-wrapper">
+             <a href="bangbin_Rapor.html" class="home-link" title="Kembali ke Menu Utama">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" />
+                </svg>
+            </a>
+            <h1 id="judulLegger">Memuat Legger Nilai...</h1>
+        </div>
+        <p>Halaman ini mengakumulasi semua nilai siswa. Kolom 'Keterangan' dapat diisi manual namun tidak akan tersimpan. Gunakan tombol 'Simpan Status' untuk menyimpan data Kenaikan Kelas.</p>
+
+        <div class="table-wrapper">
+            <table id="tabelLegger">
+                <thead id="leggerHead"></thead>
+                <tbody id="leggerBody"></tbody>
+            </table>
+        </div>
+
+        <div class="action-buttons">
+            <button id="simpanStatusButton" style="display: none;">Simpan Status Akhir</button>
+            <button id="cetakButton">Cetak/Simpan ke PDF</button>
+        </div>
+    </div>
+
+<script src="bangbin_uhuuy.js"></script>
+<script>
+const _0x31afa8=_0x9c38;function _0x9c38(_0x1b381b,_0x27cc78){const _0x3dfa78=_0x3dfa();return _0x9c38=function(_0x9c380,_0x3022be){_0x9c380=_0x9c380-0x1b7;let _0x3c9544=_0x3dfa78[_0x9c380];return _0x3c9544;},_0x9c38(_0x1b381b,_0x27cc78);}(function(_0x5ab9c6,_0x5a90da){const _0x27dd12=_0x9c38,_0xde961=_0x5ab9c6();while(!![]){try{const _0x5784ce=parseInt(_0x27dd12(0x1c9))/0x1+-parseInt(_0x27dd12(0x1f8))/0x2*(-parseInt(_0x27dd12(0x1da))/0x3)+-parseInt(_0x27dd12(0x1e8))/0x4*(-parseInt(_0x27dd12(0x1c0))/0x5)+parseInt(_0x27dd12(0x1f6))/0x6*(-parseInt(_0x27dd12(0x1e9))/0x7)+parseInt(_0x27dd12(0x1be))/0x8+-parseInt(_0x27dd12(0x1dd))/0x9+-parseInt(_0x27dd12(0x1b8))/0xa*(parseInt(_0x27dd12(0x1eb))/0xb);if(_0x5784ce===_0x5a90da)break;else _0xde961['push'](_0xde961['shift']());}catch(_0x40b7f9){_0xde961['push'](_0xde961['shift']());}}}(_0x3dfa,0xd4d81),document[_0x31afa8(0x1e3)](_0x31afa8(0x1ee),()=>{const _0x2840dd=_0x31afa8,_0x485b23=loadData(),{infoDasar:_0x451eff,dataSiswa:_0x10822a,mataPelajaran:_0x51d1a1,ekstrakurikuler:_0xad6dc8,kokurikuler:_0x380335,nilai:_0x19c2df,pelengkap:_0x220975,nilaiKokurikuler:_0x57a617}=_0x485b23,_0x3a51bc=_0x451eff['kelasAktif'],_0x25b30b=document[_0x2840dd(0x1b7)](_0x2840dd(0x1d5)),_0x41ad06=document[_0x2840dd(0x1b7)]('leggerBody'),_0x6964bd=document[_0x2840dd(0x1b7)](_0x2840dd(0x1e7)),_0x5e2e3a=document['getElementById'](_0x2840dd(0x1e6)),_0x5edf90=document[_0x2840dd(0x1b7)](_0x2840dd(0x1ca));_0x6964bd['textContent']='Legger\x20Nilai\x20Kelas\x20'+_0x451eff[_0x2840dd(0x1d7)]+_0x2840dd(0x1d9)+_0x451eff[_0x2840dd(0x1f7)]+_0x2840dd(0x1bb)+_0x451eff[_0x2840dd(0x1fa)];const _0x3165d7=_0x451eff[_0x2840dd(0x1f7)]==='2',_0x2ef3b2=_0x451eff[_0x2840dd(0x1d7)]||'',_0x37f015=_0x2ef3b2[_0x2840dd(0x1ec)]('6')||_0x2ef3b2[_0x2840dd(0x1e0)]()[_0x2840dd(0x1ec)]('VI'),_0x24ee56=_0x37f015?'Lulus':'Naik\x20Kelas';_0x3165d7&&(_0x5e2e3a[_0x2840dd(0x1f3)][_0x2840dd(0x1fb)]=_0x2840dd(0x1e2));const _0x5f5679={'Sangat\x20Baik':'SB','Baik':'B','Cukup':'C','Perlu\x20Peningkatan':'K'},_0x16d4f5=_0x51d1a1[_0x2840dd(0x1c5)](_0x4b7b9b=>!_0x4b7b9b[_0x2840dd(0x1c6)]['includes']('Pendidikan\x20Agama')),_0x45cf66=()=>{const _0x2af3b6=_0x2840dd;let _0x2c232=_0x2af3b6(0x1d3);_0x2c232+=_0x2af3b6(0x1cf),_0x16d4f5[_0x2af3b6(0x1f1)](_0x2b3863=>{const _0x339893=_0x2af3b6;_0x2c232+='<th>N_'+(_0x2b3863[_0x339893(0x1c2)]||'??')+'</th>';}),_0x2c232+=_0x2af3b6(0x1cd),_0x380335[_0x2af3b6(0x1f1)](_0x203d61=>{const _0x147aed=_0x2af3b6;_0x2c232+=_0x147aed(0x1e4)+_0x203d61[_0x147aed(0x1c6)]+'</th>';}),_0xad6dc8[_0x2af3b6(0x1f1)](_0x3ea758=>{const _0x26ec46=_0x2af3b6;_0x2c232+=_0x26ec46(0x1e4)+_0x3ea758['nama']+'</th>';}),_0x3165d7&&(_0x2c232+=_0x2af3b6(0x1e4)+_0x24ee56+_0x2af3b6(0x1e1)),_0x2c232+=_0x2af3b6(0x1ea),_0x25b30b[_0x2af3b6(0x1bd)]=_0x2c232;},_0x582d1a=()=>{const _0x162e09=_0x2840dd,_0x4333f7=_0x10822a[_0x162e09(0x1c5)](_0x570039=>_0x570039[_0x162e09(0x1c6)]&&_0x570039['nama']['trim']()!=='');let _0xc6da8c='';_0x4333f7['forEach']((_0xb86b2a,_0x526d03)=>{const _0x2a77c9=_0x162e09;let _0x2ed80b=_0x2a77c9(0x1fc)+(_0x526d03+0x1)+'</td><td\x20class=\x22col-nama\x22>'+_0xb86b2a[_0x2a77c9(0x1c6)]+'</td>';const _0x4135b2=_0xb86b2a[_0x2a77c9(0x1dc)],_0x549764=_0x51d1a1[_0x2a77c9(0x1de)](_0x1c8be8=>_0x1c8be8[_0x2a77c9(0x1c6)][_0x2a77c9(0x1ec)](_0x4135b2));let _0x434715='-';if(_0x549764){const _0x277f82=_0x19c2df[_0xb86b2a['id']]?.[_0x3a51bc]?.[_0x549764['id']];if(_0x277f82){const _0x38a657=Object['values'](_0x277f82);_0x38a657[_0x2a77c9(0x1bc)]>0x0&&(_0x434715=Math[_0x2a77c9(0x1d2)](_0x38a657[_0x2a77c9(0x1c8)]((_0x416354,_0x3b85b2)=>_0x416354+_0x3b85b2,0x0)/_0x38a657[_0x2a77c9(0x1bc)]));}}_0x2ed80b+=_0x2a77c9(0x1b9)+_0x434715+'</td>',_0x16d4f5[_0x2a77c9(0x1f1)](_0x2a7635=>{const _0x30e13b=_0x2a77c9,_0x4a8257=_0x19c2df[_0xb86b2a['id']]?.[_0x3a51bc]?.[_0x2a7635['id']];let _0x3e180e='-';if(_0x4a8257){const _0x1633c2=Object[_0x30e13b(0x1ba)](_0x4a8257);_0x1633c2[_0x30e13b(0x1bc)]>0x0&&(_0x3e180e=Math[_0x30e13b(0x1d2)](_0x1633c2['reduce']((_0x221829,_0x1bf495)=>_0x221829+_0x1bf495,0x0)/_0x1633c2[_0x30e13b(0x1bc)]));}_0x2ed80b+='<td>'+_0x3e180e+'</td>';});const _0x1f3607=_0x220975[_0x2a77c9(0x1f5)]?.[_0xb86b2a['id']]||{'sakit':0x0,'izin':0x0,'alpha':0x0},_0x53dca1=parseInt(_0x1f3607[_0x2a77c9(0x1df)]||0x0)+parseInt(_0x1f3607[_0x2a77c9(0x1db)]||0x0)+parseInt(_0x1f3607[_0x2a77c9(0x1c3)]||0x0);_0x2ed80b+=_0x2a77c9(0x1b9)+(_0x1f3607['sakit']||0x0)+_0x2a77c9(0x1d1)+(_0x1f3607['izin']||0x0)+_0x2a77c9(0x1d1)+(_0x1f3607[_0x2a77c9(0x1c3)]||0x0)+_0x2a77c9(0x1d1)+_0x53dca1+_0x2a77c9(0x1d4),_0x380335[_0x2a77c9(0x1f1)](_0x230cd3=>{const _0x32bf74=_0x2a77c9,_0x1323bb=_0x57a617?.[_0xb86b2a['id']]?.[_0x230cd3['id']]||{},_0x513be1=Object[_0x32bf74(0x1ba)](_0x1323bb)[_0x32bf74(0x1ef)](_0x42e8c7=>_0x5f5679[_0x42e8c7]||_0x42e8c7[_0x32bf74(0x1f4)](0x0))[_0x32bf74(0x1cc)]('/');_0x2ed80b+='<td>'+(_0x513be1||'-')+_0x32bf74(0x1d4);}),_0xad6dc8[_0x2a77c9(0x1f1)](_0x764b1=>{const _0xea2cc2=_0x2a77c9,_0x3c0ab4=_0x220975['ekstrakurikuler']?.[_0xb86b2a['id']]?.[_0x764b1['id']]?.[_0xea2cc2(0x1c4)]||'-',_0x4316d9=_0x5f5679[_0x3c0ab4]||'-';_0x2ed80b+='<td>'+_0x4316d9+_0xea2cc2(0x1d4);});if(_0x3165d7){const _0x331fea=_0x220975[_0x2a77c9(0x1ce)]?.[_0xb86b2a['id']]||'',_0x5d1d2a=_0x331fea===_0x24ee56;_0x2ed80b+=_0x2a77c9(0x1bf)+_0xb86b2a['id']+'\x22\x20'+(_0x5d1d2a?_0x2a77c9(0x1c7):'')+_0x2a77c9(0x1cb);}_0x2ed80b+=_0x2a77c9(0x1f9),_0xc6da8c+=_0x2ed80b;}),_0x41ad06[_0x162e09(0x1bd)]=_0xc6da8c;};_0x5e2e3a[_0x2840dd(0x1e3)](_0x2840dd(0x1d0),async()=>{const _0x42f121=_0x2840dd;if(!_0x3165d7)return;const _0x1f0bad=_0x41ad06[_0x42f121(0x1c1)](_0x42f121(0x1e5));_0x1f0bad[_0x42f121(0x1f1)](_0x3f7bc2=>{const _0x3256d5=_0x42f121,_0x2df881=_0x3f7bc2[_0x3256d5(0x1d8)][_0x3256d5(0x1ed)];if(!_0x220975[_0x3256d5(0x1ce)])_0x220975[_0x3256d5(0x1ce)]={};const _0x1250d0=_0x37f015?'Mengulang':_0x3256d5(0x1f2);_0x220975[_0x3256d5(0x1ce)][_0x2df881]=_0x3f7bc2['checked']?_0x24ee56:_0x1250d0;}),saveData(_0x485b23),await showModal(_0x42f121(0x1d6),'Status\x20akhir\x20tahun\x20siswa\x20telah\x20berhasil\x20disimpan.');}),_0x5edf90[_0x2840dd(0x1e3)]('click',()=>{const _0x47c79a=_0x2840dd;window[_0x47c79a(0x1f0)]();}),_0x45cf66(),_0x582d1a();}));function _0x3dfa(){const _0x3f8cdf=['toUpperCase','</th>','block','addEventListener','<th>','input[type=\x22checkbox\x22]','simpanStatusButton','judulLegger','4rIZTKx','133NUeJrt','<th>Keterangan</th></tr>','1452187Ztmvya','includes','siswaId','DOMContentLoaded','map','print','forEach','Tidak\x20Naik\x20Kelas','style','charAt','absensi','353082EwXQKi','semester','3260404QPLqxo','<td\x20contenteditable=\x22true\x22></td></tr>','tahunAjaran','display','<tr><td\x20class=\x22col-no\x22>','getElementById','30GqikAf','<td>','values','\x20T.A\x20','length','innerHTML','8616224ioQnPL','<td><input\x20type=\x22checkbox\x22\x20data-siswa-id=\x22','554635ofBYDz','querySelectorAll','singkat','alpha','predikat','filter','nama','checked','reduce','1196751kCEnyM','cetakButton','></td>','join','<th>S</th><th>I</th><th>A</th><th>JL</th>','kenaikanKelas','<th>N_Agama</th>','click','</td><td>','round','<tr><th\x20class=\x22col-no\x22>No</th><th\x20class=\x22col-nama\x22>Nama\x20Siswa</th>','</td>','leggerHead','Berhasil','kelas','dataset','\x20-\x20Semester\x20','3ouwbUL','izin','agama','14660595PGdzAt','find','sakit'];_0x3dfa=function(){return _0x3f8cdf;};return _0x3dfa();}
+</script>
+</body>
+</html>
