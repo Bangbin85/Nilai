@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">
     <link rel="stylesheet" href="style.css">
     <style>
         /* Style untuk judul dan ikon home */
@@ -45,7 +46,7 @@
 <body>
     <div class="container">
         <div class="title-wrapper">
-             <a href="Bangbin_Rapor.html" class="home-link" title="Kembali ke Menu Utama">
+             <a href="bangbin_Rapor.html" class="home-link" title="Kembali ke Menu Utama">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" />
                 </svg>
@@ -100,53 +101,9 @@
 
     <script src="bangbin_uhuuyy.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const dataRapor = loadData();
-            const form = document.getElementById('formInfoDasar');
-
-            // Fungsi untuk mengisi form dengan data dari LocalStorage
-            const populateForm = () => {
-                const info = dataRapor.infoDasar;
-                document.getElementById('namaSekolah').value = info.namaSekolah || '';
-                document.getElementById('alamat').value = info.alamat || '';
-                document.getElementById('kepalaSekolah').value = info.kepalaSekolah || '';
-                document.getElementById('nipKepsek').value = info.nipKepsek || '';
-                document.getElementById('namaGuru').value = info.namaGuru || '';
-                document.getElementById('nipGuru').value = info.nipGuru || '';
-                document.getElementById('kelas').value = info.kelas || '';
-                document.getElementById('fase').value = info.fase || '';
-                document.getElementById('semester').value = info.semester || '1';
-                document.getElementById('tahunAjaran').value = info.tahunAjaran || '';
-            };
-
-            // Event listener untuk menyimpan data saat form disubmit
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault(); // Mencegah form mengirim data ke server
-
-                // Ambil semua nilai dari form dan masukkan ke objek dataRapor
-                dataRapor.infoDasar = {
-                    namaSekolah: document.getElementById('namaSekolah').value,
-                    alamat: document.getElementById('alamat').value,
-                    kepalaSekolah: document.getElementById('kepalaSekolah').value,
-                    nipKepsek: document.getElementById('nipKepsek').value,
-                    namaGuru: document.getElementById('namaGuru').value,
-                    nipGuru: document.getElementById('nipGuru').value,
-                    kelas: document.getElementById('kelas').value,
-                    fase: document.getElementById('fase').value,
-                    semester: document.getElementById('semester').value,
-                    tahunAjaran: document.getElementById('tahunAjaran').value,
-                };
-
-                // Simpan objek dataRapor yang sudah diperbarui ke LocalStorage
-                saveData(dataRapor);
-
-                await showModal('Tersimpan!', 'Data informasi dasar berhasil disimpan!');
-            });
-
-            // Panggil fungsi untuk mengisi form saat halaman pertama kali dimuat
-            populateForm();
-        });
+function _0x2ea2(){const _0x187531=['48PrlbGO','884oxspZT','418220BGewBT','6272045NUkygT','semester','namaSekolah','7992135GyFUIN','2FofwHO','tahunAjaran','addEventListener','DOMContentLoaded','nipKepsek','submit','fase','kepalaSekolah','8xEREAl','getElementById','3844602BdjeVL','7vwGhHa','374uxldlY','namaGuru','kelas','alamat','infoDasar','preventDefault','10309113CVyMpC','Data\x20informasi\x20dasar\x20berhasil\x20disimpan!','Tersimpan!','550061wUhyeb','value','4035nbrKLT'];_0x2ea2=function(){return _0x187531;};return _0x2ea2();}const _0x2693c7=_0x17c6;function _0x17c6(_0x615c8a,_0x3cf38f){const _0x2ea276=_0x2ea2();return _0x17c6=function(_0x17c6cc,_0x22aea9){_0x17c6cc=_0x17c6cc-0xdd;let _0x5598d4=_0x2ea276[_0x17c6cc];return _0x5598d4;},_0x17c6(_0x615c8a,_0x3cf38f);}(function(_0x433083,_0x402a13){const _0x5ad280=_0x17c6,_0xe92139=_0x433083();while(!![]){try{const _0x307227=parseInt(_0x5ad280(0xf5))/0x1*(parseInt(_0x5ad280(0xe0))/0x2)+-parseInt(_0x5ad280(0xf7))/0x3*(-parseInt(_0x5ad280(0xf9))/0x4)+-parseInt(_0x5ad280(0xdf))/0x5+parseInt(_0x5ad280(0xea))/0x6*(-parseInt(_0x5ad280(0xeb))/0x7)+-parseInt(_0x5ad280(0xe8))/0x8*(parseInt(_0x5ad280(0xf2))/0x9)+parseInt(_0x5ad280(0xfa))/0xa*(parseInt(_0x5ad280(0xec))/0xb)+parseInt(_0x5ad280(0xf8))/0xc*(parseInt(_0x5ad280(0xfb))/0xd);if(_0x307227===_0x402a13)break;else _0xe92139['push'](_0xe92139['shift']());}catch(_0x1ef5a2){_0xe92139['push'](_0xe92139['shift']());}}}(_0x2ea2,0xc6d7f),document[_0x2693c7(0xe2)](_0x2693c7(0xe3),()=>{const _0x1b7375=_0x2693c7,_0x58f77e=loadData(),_0x45a581=document[_0x1b7375(0xe9)]('formInfoDasar'),_0x50ac62=()=>{const _0x3239b3=_0x1b7375,_0x4d8a01=_0x58f77e[_0x3239b3(0xf0)];document[_0x3239b3(0xe9)](_0x3239b3(0xde))[_0x3239b3(0xf6)]=_0x4d8a01['namaSekolah']||'',document['getElementById'](_0x3239b3(0xef))[_0x3239b3(0xf6)]=_0x4d8a01[_0x3239b3(0xef)]||'',document['getElementById'](_0x3239b3(0xe7))[_0x3239b3(0xf6)]=_0x4d8a01[_0x3239b3(0xe7)]||'',document['getElementById'](_0x3239b3(0xe4))[_0x3239b3(0xf6)]=_0x4d8a01['nipKepsek']||'',document[_0x3239b3(0xe9)](_0x3239b3(0xed))['value']=_0x4d8a01['namaGuru']||'',document[_0x3239b3(0xe9)]('nipGuru')[_0x3239b3(0xf6)]=_0x4d8a01['nipGuru']||'',document[_0x3239b3(0xe9)](_0x3239b3(0xee))[_0x3239b3(0xf6)]=_0x4d8a01[_0x3239b3(0xee)]||'',document[_0x3239b3(0xe9)]('fase')['value']=_0x4d8a01[_0x3239b3(0xe6)]||'',document[_0x3239b3(0xe9)](_0x3239b3(0xdd))[_0x3239b3(0xf6)]=_0x4d8a01[_0x3239b3(0xdd)]||'1',document[_0x3239b3(0xe9)](_0x3239b3(0xe1))[_0x3239b3(0xf6)]=_0x4d8a01[_0x3239b3(0xe1)]||'';};_0x45a581[_0x1b7375(0xe2)](_0x1b7375(0xe5),async _0x2a55f1=>{const _0x5e663f=_0x1b7375;_0x2a55f1[_0x5e663f(0xf1)](),_0x58f77e['infoDasar']={'namaSekolah':document[_0x5e663f(0xe9)](_0x5e663f(0xde))[_0x5e663f(0xf6)],'alamat':document[_0x5e663f(0xe9)](_0x5e663f(0xef))[_0x5e663f(0xf6)],'kepalaSekolah':document['getElementById'](_0x5e663f(0xe7))['value'],'nipKepsek':document['getElementById'](_0x5e663f(0xe4))[_0x5e663f(0xf6)],'namaGuru':document['getElementById'](_0x5e663f(0xed))[_0x5e663f(0xf6)],'nipGuru':document[_0x5e663f(0xe9)]('nipGuru')[_0x5e663f(0xf6)],'kelas':document['getElementById']('kelas')[_0x5e663f(0xf6)],'fase':document[_0x5e663f(0xe9)](_0x5e663f(0xe6))['value'],'semester':document[_0x5e663f(0xe9)]('semester')[_0x5e663f(0xf6)],'tahunAjaran':document[_0x5e663f(0xe9)](_0x5e663f(0xe1))[_0x5e663f(0xf6)]},saveData(_0x58f77e),await showModal(_0x5e663f(0xf4),_0x5e663f(0xf3));}),_0x50ac62();}));
     </script>
 </body>
 </html>
+
 
