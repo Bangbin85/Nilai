@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Spreadsheet Tujuan Pembelajaran</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* === DESAIN NEUMORPHISM === */
+        :root {
+            --primary-color: #007aff;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --bg-color: #eef2f5;
+            --font-color: #586474;
+            --light-shadow: rgba(255, 255, 255, 0.9);
+            --dark-shadow: #d1d9e6;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: 'Poppins', 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--font-color);
+            transition: background-color 0.3s;
+        }
+
+        /* Container & Panel Utama */
+        .neo-container {
+            background-color: var(--bg-color);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: 9px 9px 16px var(--dark-shadow), -9px -9px 16px var(--light-shadow);
+        }
+
+        /* Tombol Neumorphic */
+        .btn-neo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--border-radius);
+            background: var(--bg-color);
+            color: var(--font-color);
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
+        }
+        .btn-neo:hover {
+            color: var(--primary-color);
+        }
+        .btn-neo:active {
+            box-shadow: inset 3px 3px 7px var(--dark-shadow), inset -3px -3px 7px var(--light-shadow);
+            color: var(--primary-color);
+            transform: scale(0.98);
+        }
+        .btn-neo:disabled {
+            color: #b0b8c4;
+            cursor: not-allowed;
+            box-shadow: inset 3px 3px 7px var(--dark-shadow), inset -3px -3px 7px var(--light-shadow);
+        }
+        .btn-neo.success { color: var(--success-color); }
+        .btn-neo.success:hover { color: #1e7e34; }
+        .btn-neo.danger { color: var(--danger-color); }
+        .btn-neo.danger:hover { color: #a71d2a; }
+        .btn-neo svg { width: 20px; height: 20px; }
+
+        /* Input & Select Neumorphic */
+        .input-neo,
+        .select-neo {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--bg-color);
+            box-shadow: inset 3px 3px 7px var(--dark-shadow), inset -3px -3px 7px var(--light-shadow);
+            color: var(--font-color);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1em;
+        }
+        .input-neo:focus,
+        .select-neo:focus {
+            outline: none;
+            box-shadow: inset 1px 1px 2px var(--dark-shadow), inset -1px -1px 2px var(--light-shadow), 0 0 0 2px var(--primary-color);
+        }
+        
+        /* Modal Neumorphic */
+        .modal-backdrop {
+            position: fixed; inset: 0;
+            background-color: rgba(238, 242, 245, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+        }
+        .modal-content-neo {
+            background-color: var(--bg-color);
+            border-radius: 20px;
+            box-shadow: 15px 15px 30px var(--dark-shadow), -15px -15px 30px var(--light-shadow);
+            width: 90%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header-neo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            color: var(--primary-color);
+        }
+        .modal-header-neo .icon { width: 28px; height: 28px; }
+        .modal-body-neo {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+        .modal-actions-neo {
+            padding: 1rem 1.5rem;
+            text-align: right;
+            border-top: 1px solid var(--dark-shadow);
+        }
+        
+        .tutorial-section { margin-bottom: 1.5rem; }
+        .tutorial-section h4 { font-size: 1.1rem; font-weight: 600; color: #111827; margin-bottom: 1rem; }
+        .tutorial-step { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+        .tutorial-icon { flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .tutorial-icon svg { width: 22px; height: 22px; }
+        .tutorial-icon.blue { background-color: #dbeafe; color: #3b82f6; }
+        .tutorial-icon.green { background-color: #dcfce7; color: #22c55e; }
+        .tutorial-icon.red { background-color: #fee2e2; color: #ef4444; }
+        .tutorial-text strong { font-weight: 600; color: #1f2937; }
+        .tutorial-text p { font-size: 0.95rem; color: #4b5563; line-height: 1.6; }
+        .important-note { padding: 1rem; background-color: #fffbeb; border-left: 4px solid #f59e0b; display: flex; align-items: center; gap: 0.75rem; border-radius: 0.25rem; }
+        .important-note .icon { color: #f59e0b; width: 24px; height: 24px; flex-shrink: 0; }
+        .important-note p { margin: 0; font-size: 0.9rem; color: #b45309; }
+        .important-note p strong { color: #92400e; }
+        
+        /* Menghilangkan style asli agar tidak konflik */
+        .bg-white, .bg-gray-100, .bg-gray-50, .shadow-sm, .border, .rounded-lg, .rounded-md {
+            background-color: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+        }
+
+        /* === PERUBAHAN UNTUK STICKY HEADER === */
+        .table-wrapper {
+            max-height: 65vh; /* Atur tinggi maksimum tabel */
+            overflow: auto;    /* Aktifkan scroll vertikal dan horizontal jika perlu */
+            position: relative;
+        }
+        .table-wrapper thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: var(--bg-color); /* Samakan dengan background panel */
+            border-bottom: 2px solid var(--dark-shadow);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header class="sticky top-0 z-50 bg-white/80" style="backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin: -2rem -2rem 2rem -2rem; padding: 0.75rem 2rem;">
+        <div class="w-full max-w-full mx-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-center">
+                <div class="text-center sm:text-left mb-3 sm:mb-0">
+                    <h1 class="text-xl md:text-2xl font-bold text-gray-800">Tujuan Pembelajaran</h1>
+                </div>
+                <div class="flex items-center space-x-2 md:space-x-3">
+                    <div id="status-display" class="text-sm font-medium text-gray-600 hidden md:block"></div>
+                    <a href="bangbin_Rapor.html" class="bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center" title="Halaman Utama">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>
+                    </a>
+                    <button id="tutorialBtn" class="bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center" title="Buka Tutorial">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>
+                    </button>
+                    <button id="dataOptionsBtn" class="bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center" title="Excel">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 7h.01M12 7h.01M16 7h.01M9 17h6M9 12h6M4 17V7a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2z" clip-rule="evenodd" /></svg>
+                    </button>					
+                    <button id="saveBtn" class="bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
+                        Simpan
+                    </button>
+					<div class="self-end"><button id="addRowBtn" class="w-full btn-neo danger">Tambah</button></div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <main class="w-full max-w-full mx-auto">
+        <div id="filter-panel" class="neo-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 mb-6">
+            <div><select id="filter-fase" class="select-neo"><option value="">Semua Fase</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select></div>
+            <div><select id="filter-kelas" class="select-neo"><option value="">Semua Kelas</option></select></div>
+            <div><select id="filter-pelajaran" class="select-neo"><option value="">Semua Pelajaran</option></select></div>
+            <div><input type="text" id="filter-materi" placeholder="Cari materi..." class="input-neo"></div>
+            <div class="self-end"><button id="resetFilterBtn" class="w-full btn-neo danger">Reset Filter</button></div>
+        </div>
+
+        <div class="neo-container">
+            <div class="table-wrapper">
+                <table class="w-full" style="border-collapse: separate; border-spacing: 0 10px; table-layout: fixed;">
+                    <thead>
+                        <tr>
+                            <th class="p-3 text-left text-sm font-semibold text-black-500" style="width: 5%;">Fase</th>
+                            <th class="p-3 text-left text-sm font-semibold text-gray-500" style="width: 10%;">Kelas</th>
+                            <th class="p-3 text-left text-sm font-semibold text-gray-500" style="width: 15%;">Pelajaran</th>
+                            <th class="p-3 text-left text-sm font-semibold text-gray-500" style="width: 10%;">Materi</th>
+                            <th class="p-3 text-left text-sm font-semibold text-gray-500" style="width: 50%;">Tujuan Pembelajaran</th>
+                            <th class="p-3 text-center text-sm font-semibold text-gray-500" style="width: 10%;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spreadsheet-body">
+                        <!-- Rows will be dynamically inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination Controls -->
+            <div id="pagination-controls" class="flex justify-between items-center mt-6">
+                <button id="prev-page-btn" class="btn-neo">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                    Sebelumnya
+                </button>
+                <span id="page-info" class="font-semibold text-gray-600"></span>
+                <button id="next-page-btn" class="btn-neo">
+                    Berikutnya
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </button>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modals (Tutorial and Data Options) remain unchanged -->
+    <div id="tutorialModal" class="modal-backdrop hidden items-center justify-center p-4">
+        <div class="modal-content-neo">
+            <div class="modal-header-neo">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.375a6.375 6.375 0 006.375-6.375V9.75A6.375 6.375 0 0012 3.375a6.375 6.375 0 00-6.375 6.375V12a6.375 6.375 0 006.375 6.375zM12 18.375a6.375 6.375 0 01-6.375-6.375V9.75A6.375 6.375 0 0112 3.375a6.375 6.375 0 016.375 6.375V12A6.375 6.375 0 0112 18.375zM12 6.375v1.5m0 3.75v.008m0 3.742v1.5M12 3.375c-.621 0-1.125.504-1.125 1.125s.504 1.125 1.125 1.125 1.125-.504 1.125-1.125S12.621 3.375 12 3.375z" />
+                </svg>
+                <span>Panduan Penggunaan</span>
+            </div>
+            <div class="modal-body-neo">
+                <div class="tutorial-section">
+                    <h4>Manajemen Data Dasar</h4>
+                    <div class="tutorial-step">
+                        <div class="tutorial-icon blue"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg></div>
+                        <div class="tutorial-text">
+                            <p><strong>Tambah Baris:</strong> Klik tombol biru "Tambah" untuk membuat baris data baru di tabel.</p>
+                        </div>
+                    </div>
+                    <div class="tutorial-step">
+                        <div class="tutorial-icon green"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg></div>
+                        <div class="tutorial-text">
+                            <p><strong>Simpan ke Cloud:</strong> Klik tombol hijau "Simpan" untuk mengirim semua data di tabel ke Google Sheets.</p>
+                        </div>
+                    </div>
+                     <div class="tutorial-step">
+                        <div class="tutorial-icon red"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></div>
+                        <div class="tutorial-text">
+                            <p><strong>Aksi Baris:</strong> Gunakan ikon duplikat atau hapus pada setiap baris untuk mengelola data secara individual.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tutorial-section">
+                    <h4>Impor & Ekspor Data Excel</h4>
+                    <div class="tutorial-step">
+                        <div class="tutorial-icon green"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9A2.25 2.25 0 0019.5 19.5V10.5A2.25 2.25 0 0017.25 8.25H15M12 12.75V3m0 9.75l-3.75-3.75M12 12.75l3.75-3.75" /></svg></div>
+                        <div class="tutorial-text">
+                            <p><strong>Ekspor Data:</strong> Buka "Opsi Data", lalu klik "Unduh Data ke Excel". Semua data yang sedang ditampilkan di tabel akan diunduh menjadi file `.xlsx` dengan format dan dropdown yang lengkap.</p>
+                        </div>
+                    </div>
+                     <div class="tutorial-step">
+                        <div class="tutorial-icon blue"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l-3.75 3.75M12 9.75l3.75 3.75M19.5 12a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z" /></svg></div>
+                        <div class="tutorial-text">
+                            <p><strong>Impor Data:</strong> Buka "Opsi Data", pilih file Excel, pilih mode impor (Ganti atau Tambah), lalu klik "Impor Data". Ini akan memuat data dari file Excel ke dalam tabel aplikasi.</p>
+                        </div>
+                    </div>
+                    <div class="important-note">
+                         <div class="icon">
+                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" /></svg>
+                         </div>
+                         <p><strong>PENTING:</strong> Saat menyiapkan file untuk impor, <strong>kolom ID harus diabaikan atau dikosongkan</strong>. Sistem akan membuat ID baru secara otomatis.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions-neo">
+                <button class="close-modal-btn btn-neo">Saya Mengerti</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="dataModal" class="modal-backdrop hidden items-center justify-center p-4">
+        <div class="modal-content-neo">
+             <h3 class="text-xl font-bold" style="color: var(--primary-color);">Opsi Data Excel</h3>
+             <div class="space-y-6">
+                 <div class="space-y-2">
+                     <h4 class="font-semibold text-gray-700">Ekspor Data</h4>
+                     <p class="text-sm text-gray-500">Unduh semua data yang ada di tabel ke dalam format file Excel (.xlsx) dengan format yang disempurnakan.</p>
+                     <button id="exportBtn" class="w-full btn-neo success">Unduh Data ke Excel</button>
+                 </div>
+                 <div class="border-t my-4" style="border-color: var(--dark-shadow);"></div>
+                 <div class="space-y-2">
+                     <h4 class="font-semibold text-gray-700">Impor Data</h4>
+                     <p class="text-sm text-gray-500">Pilih file Excel (.xlsx) untuk dimuat ke dalam tabel.</p>
+                     <input type="file" id="importFile" accept=".xlsx, .xls" class="input-neo w-full text-sm" />
+                     <div class="mt-4 space-y-2">
+                         <p class="text-sm font-medium text-gray-700">Mode Impor:</p>
+                         <div class="flex items-center space-x-4">
+                             <label class="flex items-center cursor-pointer"><input type="radio" name="importMode" value="replace" class="h-4 w-4" checked> <span class="ml-2 text-sm text-gray-700">Hapus data lama & ganti</span></label>
+                             <label class="flex items-center cursor-pointer"><input type="radio" name="importMode" value="append" class="h-4 w-4"> <span class="ml-2 text-sm text-gray-700">Tambahkan ke data ada</span></label>
+                         </div>
+                     </div>
+                     <button id="importBtn" class="w-full mt-4 btn-neo">Impor Data</button>
+                 </div>
+             </div>
+             <div class="modal-actions-neo" style="border-top: none; padding-top: 0; margin-top: 1rem;">
+                <button class="close-modal-btn btn-neo danger">Tutup</button>
+             </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- KONFIGURASI & VARIABEL GLOBAL ---
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2Sf-7Nac2tdDewnQRrpsce5QrEtaGFyDSczNF7IaInEwk6Jqfm6a7H0uqwUsKoIPV/exec";
+            const pelajaranOptions = ["Pendidikan Agama Islam dan Budi Pekerti", "Pendidikan Agama Protestan dan Budi Pekerti", "Pendidikan Agama Katholik dan Budi Pekerti", "Pendidikan Agama Hindu dan Budi Pekerti", "Pendidikan Agama Budha dan Budi Pekerti", "Pendidikan Agama Konghucu dan Budi Pekerti", "Pendidikan Pancasila", "Bahasa Indonesia", "Matematika", "Ilmu Pengetahuan Alam dan Sosial", "Seni Rupa", "Seni Musik", "Seni Teater", "Seni Tari", "Koding dan Kecerdasan Buatan", "Pendidikan Lingkungan dan Budaya Jakarta", "Pendidikan Jasmani Olahraga dan Kesehatan", "Bahasa Inggris", "Bahasa Bali", "Bahasa Sunda", "Bahasa Jawa", "Bahasa Padang"];
+
+            // --- State Management ---
+            let allData = []; // Master data dari server
+            let filteredData = []; // Data setelah difilter, digunakan untuk paginasi
+            let currentPage = 1;
+            const rowsPerPage = 10;
+
+            // --- Elemen DOM ---
+            const tableBody = document.getElementById('spreadsheet-body');
+            const addRowBtn = document.getElementById('addRowBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const statusDisplay = document.getElementById('status-display');
+            
+            // Filter
+            const filterFase = document.getElementById('filter-fase');
+            const filterKelas = document.getElementById('filter-kelas');
+            const filterPelajaran = document.getElementById('filter-pelajaran');
+            const filterMateri = document.getElementById('filter-materi');
+            const resetFilterBtn = document.getElementById('resetFilterBtn');
+
+            // Paginasi
+            const pageInfo = document.getElementById('page-info');
+            const prevPageBtn = document.getElementById('prev-page-btn');
+            const nextPageBtn = document.getElementById('next-page-btn');
+
+            // Modal
+            const tutorialModal = document.getElementById('tutorialModal');
+            const dataModal = document.getElementById('dataModal');
+            const tutorialBtn = document.getElementById('tutorialBtn');
+            const dataOptionsBtn = document.getElementById('dataOptionsBtn');
+            const closeModalBtns = document.querySelectorAll('.close-modal-btn');
+            
+            // Excel
+            const exportBtn = document.getElementById('exportBtn');
+            const importBtn = document.getElementById('importBtn');
+            const importFile = document.getElementById('importFile');
+
+            // --- FUNGSI UTAMA ---
+
+            // Mengatur pesan status
+            const setStatus = (message, isSaving = false, duration = 3000) => {
+                statusDisplay.textContent = message;
+                statusDisplay.classList.toggle('status-saving', isSaving);
+                saveBtn.disabled = isSaving;
+                if (!isSaving && message) {
+                    setTimeout(() => statusDisplay.textContent = "", duration);
+                }
+            };
+
+            // Menghitung ulang semua ID secara stabil berdasarkan posisi di master data
+            const recalculateAllIDs = () => {
+                const idCounters = {};
+                allData.forEach(rowData => {
+                    const kelas = rowData.kelas;
+                    const pelajaranIndex = pelajaranOptions.indexOf(rowData.pelajaran);
+                    if (kelas && pelajaranIndex > -1) {
+                        const baseId = `tp-kl${kelas}-m${pelajaranIndex + 1}`;
+                        idCounters[baseId] = (idCounters[baseId] || 0) + 1;
+                        rowData.id = `${baseId}-${idCounters[baseId]}`;
+                    } else {
+                        rowData.id = `temp-${Date.now()}-${Math.random()}`; // ID sementara jika data tidak lengkap
+                    }
+                });
+            };
+            
+            // Membuat satu elemen baris (TR) dari objek data
+            const createRowElement = (rowData) => {
+                const row = document.createElement('tr');
+                row.dataset.id = rowData.id; // Gunakan ID dari objek data
+                row.style.boxShadow = '5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow)';
+                row.style.borderRadius = 'var(--border-radius)';
+
+                row.innerHTML = `
+                    <td class="p-0 align-top" style="border-radius: var(--border-radius) 0 0 var(--border-radius);"><select data-field="fase" class="input-neo" style="box-shadow: none; border-radius: 0;"></select></td>
+                    <td class="p-0 align-top"><select data-field="kelas" class="input-neo" style="box-shadow: none; border-radius: 0;"></select></td>
+                    <td class="p-0 align-top"><select data-field="pelajaran" class="input-neo" style="box-shadow: none; border-radius: 0;"></select></td>
+                    <td class="p-0 align-top"><textarea rows="2" data-field="materi" placeholder="Tulis materi..." class="input-neo" style="box-shadow: none; border-radius: 0;"></textarea></td>
+                    <td class="p-0 align-top"><textarea rows="2" data-field="tujuan" placeholder="Tulis tujuan..." class="input-neo" style="box-shadow: none; border-radius: 0;"></textarea></td>
+                    <td class="p-2 align-middle text-center" style="border-radius: 0 var(--border-radius) var(--border-radius) 0;">
+                        <div class="flex justify-center items-center space-x-1 actions-container" title="ID: ${rowData.id}">
+                            <button class="duplicate-row-btn btn-neo" style="width: 36px; height: 36px; padding: 0;" title="Duplikat Baris"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg></button>
+                            <button class="delete-row-btn btn-neo danger" style="width: 36px; height: 36px; padding: 0;" title="Hapus Baris"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                        </div>
+                    </td>`;
+                
+                // Populate selects and textareas
+                const faseSelect = row.querySelector('[data-field="fase"]');
+                ['A', 'B', 'C', 'D', 'E'].forEach(f => faseSelect.add(new Option(f, f)));
+                faseSelect.value = rowData.fase || 'A';
+
+                const kelasSelect = row.querySelector('[data-field="kelas"]');
+                Array.from({length: 12}, (_, i) => i + 1).forEach(k => kelasSelect.add(new Option(`Kelas ${k}`, k)));
+                kelasSelect.value = rowData.kelas || '1';
+
+                const pelajaranSelect = row.querySelector('[data-field="pelajaran"]');
+                pelajaranOptions.forEach(p => pelajaranSelect.add(new Option(p, p)));
+                pelajaranSelect.value = rowData.pelajaran || pelajaranOptions[0];
+
+                row.querySelector('[data-field="materi"]').value = rowData.materi || '';
+                row.querySelector('[data-field="tujuan"]').value = rowData.tujuan || '';
+                
+                return row;
+            };
+
+            // Menampilkan halaman data yang spesifik
+            const displayPage = (page) => {
+                currentPage = page;
+                tableBody.innerHTML = ''; // Kosongkan tabel
+
+                const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+                if (totalPages === 0) {
+                    pageInfo.textContent = 'Tidak ada data';
+                    prevPageBtn.disabled = true;
+                    nextPageBtn.disabled = true;
+                    return;
+                }
+
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                const paginatedItems = filteredData.slice(start, end);
+
+                paginatedItems.forEach(rowData => tableBody.appendChild(createRowElement(rowData)));
+
+                // Update info dan tombol paginasi
+                pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages}`;
+                prevPageBtn.disabled = currentPage === 1;
+                nextPageBtn.disabled = currentPage === totalPages;
+            };
+
+            // Menerapkan filter ke master data dan menampilkan ulang halaman pertama
+            const applyFilters = () => {
+                const fase = filterFase.value;
+                const kelas = filterKelas.value;
+                const pelajaran = filterPelajaran.value;
+                const materi = filterMateri.value.toLowerCase();
+
+                filteredData = allData.filter(row => {
+                    return (fase === "" || row.fase === fase) &&
+                           (kelas === "" || String(row.kelas) === kelas) &&
+                           (pelajaran === "" || row.pelajaran === pelajaran) &&
+                           (materi === "" || (row.materi && row.materi.toLowerCase().includes(materi)));
+                });
+                displayPage(1); // Selalu kembali ke halaman pertama setelah filter
+            };
+            
+            // Mengambil data dari Google Sheets
+            const fetchData = async () => {
+                if (!GOOGLE_SCRIPT_URL) {
+                    setStatus("URL Google Script belum diatur.", false);
+                    allData = [];
+                    applyFilters();
+                    return;
+                }
+                setStatus("Memuat data...", true);
+                try {
+                    const response = await fetch(GOOGLE_SCRIPT_URL);
+                    const result = await response.json();
+                    if (result.success) {
+                        allData = result.data;
+                        recalculateAllIDs(); // Hitung ID setelah data diterima
+                        applyFilters(); // Terapkan filter (awalanya akan menampilkan semua)
+                        setStatus("Data berhasil dimuat.", false);
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    setStatus(`Gagal memuat: ${error.message}`, false);
+                    allData = [];
+                    applyFilters();
+                }
+            };
+            
+            // Menyimpan data (mengirim seluruh master data)
+            const saveData = async () => {
+                setStatus("Menyimpan...", true);
+                // Data yang dikirim adalah seluruh `allData`, bukan hanya yang terlihat
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, { 
+                        method: 'POST', 
+                        mode: 'no-cors', 
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                        body: JSON.stringify(allData) 
+                    });
+                    setStatus("Data berhasil dikirim!", false);
+                } catch (error) {
+                    setStatus(`Gagal menyimpan: ${error.message}`, false);
+                }
+            };
+
+            // --- INISIALISASI & EVENT LISTENERS ---
+
+            // Isi dropdown filter
+            pelajaranOptions.forEach(p => { filterPelajaran.innerHTML += `<option value="${p}">${p}</option>`; });
+            Array.from({length: 12}, (_, i) => i + 1).forEach(k => { filterKelas.innerHTML += `<option value="${k}">Kelas ${k}</option>`; });
+            
+            // Event listener untuk filter
+            [filterFase, filterKelas, filterPelajaran].forEach(el => el.addEventListener('change', applyFilters));
+            filterMateri.addEventListener('input', applyFilters);
+            resetFilterBtn.addEventListener('click', () => {
+                filterFase.value = ""; filterKelas.value = ""; filterPelajaran.value = ""; filterMateri.value = "";
+                applyFilters();
+            });
+
+            // Event listener untuk tombol utama
+            saveBtn.addEventListener('click', saveData);
+            addRowBtn.addEventListener('click', () => {
+                const newRowData = {
+                    fase: 'A', kelas: '1', pelajaran: pelajaranOptions[0], materi: '', tujuan: '', id: `new-${Date.now()}`
+                };
+                allData.push(newRowData);
+                recalculateAllIDs();
+                applyFilters(); // Terapkan filter lagi untuk memasukkan baris baru
+                // Pindah ke halaman terakhir untuk melihat baris baru
+                const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+                displayPage(totalPages);
+                setStatus("Baris baru ditambahkan di akhir. Jangan lupa simpan.", false, 5000);
+            });
+
+            // Event listener untuk aksi di dalam tabel (delegation)
+            tableBody.addEventListener('click', e => {
+                const button = e.target.closest('button');
+                if (!button) return;
+                
+                const row = button.closest('tr');
+                const rowId = row.dataset.id;
+                const dataIndex = allData.findIndex(item => item.id === rowId);
+                if (dataIndex === -1) return;
+
+                if (button.classList.contains('delete-row-btn')) {
+                    allData.splice(dataIndex, 1);
+                    recalculateAllIDs();
+                    applyFilters();
+                }
+                if (button.classList.contains('duplicate-row-btn')) {
+                    const originalData = allData[dataIndex];
+                    const duplicatedData = { ...originalData, id: `new-dup-${Date.now()}` };
+                    allData.splice(dataIndex + 1, 0, duplicatedData);
+                    recalculateAllIDs();
+                    applyFilters();
+                }
+            });
+
+            // Event listener untuk update data di 'allData' saat input diubah
+            tableBody.addEventListener('input', e => {
+                const input = e.target;
+                const field = input.dataset.field;
+                if (!field) return;
+
+                const row = input.closest('tr');
+                const rowId = row.dataset.id;
+                
+                const dataItem = allData.find(item => item.id === rowId);
+                if (dataItem) {
+                    dataItem[field] = input.value;
+                    // Jika field yang mengubah ID diubah, hitung ulang semua ID
+                    if (field === 'kelas' || field === 'pelajaran') {
+                        recalculateAllIDs();
+                        // Update ID di DOM juga agar tidak out-of-sync
+                        row.dataset.id = dataItem.id;
+                        row.querySelector('.actions-container').title = `ID: ${dataItem.id}`;
+                    }
+                }
+            });
+
+            // Event listener untuk paginasi
+            prevPageBtn.addEventListener('click', () => {
+                if (currentPage > 1) displayPage(currentPage - 1);
+            });
+            nextPageBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+                if (currentPage < totalPages) displayPage(currentPage + 1);
+            });
+
+            // Event listener untuk modal
+            const openModal = (modal) => { modal.classList.remove('hidden'); modal.classList.add('flex') };
+            const closeModal = (modal) => { modal.classList.add('hidden'); modal.classList.remove('flex') };
+            tutorialBtn.addEventListener('click', () => openModal(tutorialModal));
+            dataOptionsBtn.addEventListener('click', () => openModal(dataModal));
+            closeModalBtns.forEach(btn => btn.addEventListener('click', (e) => closeModal(e.target.closest('.modal-backdrop'))));
+            [tutorialModal, dataModal].forEach(modal => modal.addEventListener('click', e => { if (e.target === modal) closeModal(modal); }));
+
+            // --- FUNGSI EXCEL (Impor & Ekspor) ---
+            // Fungsi ekspor (tidak perlu diubah, karena membaca dari DOM dan filter sudah diterapkan)
+            exportBtn.addEventListener('click', async function() {
+                const button = this;
+                button.disabled = true;
+                const originalText = button.textContent;
+                button.textContent = 'Memproses...';
+
+                try {
+                    const workbook = new ExcelJS.Workbook();
+                    const mainSheet = workbook.addWorksheet('BANGBIN_TP');
+                    
+                    const listSheet = workbook.addWorksheet('DaftarOpsi');
+                    pelajaranOptions.forEach((p, index) => {
+                        listSheet.getCell(`A${index + 1}`).value = p;
+                    });
+                    listSheet.state = 'hidden';
+
+                    mainSheet.columns = [
+                        { header: 'Fase', key: 'fase', width: 12 },
+                        { header: 'Kelas', key: 'kelas', width: 12 },
+                        { header: 'Pelajaran', key: 'pelajaran', width: 45 },
+                        { header: 'Materi', key: 'materi', width: 45 },
+                        { header: 'Tujuan Pembelajaran', key: 'tujuan', width: 60 },
+                        { header: 'ID', key: 'id', width: 40 }
+                    ];
+
+                    mainSheet.getRow(1).eachCell((cell) => {
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF007aff' } };
+                        cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    });
+                    
+                    // Ekspor data yang sedang difilter
+                    filteredData.forEach(rowData => {
+                        mainSheet.addRow({
+                            fase: rowData.fase,
+                            kelas: `Kelas ${rowData.kelas}`,
+                            pelajaran: rowData.pelajaran,
+                            materi: rowData.materi,
+                            tujuan: rowData.tujuan,
+                            id: rowData.id
+                        });
+                    });
+
+                    const lastRow = mainSheet.rowCount;
+                    const validationRowCount = lastRow + 200;
+
+                    for (let i = 2; i <= validationRowCount; i++) {
+                        mainSheet.getCell(`A${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: ['"A,B,C,D,E,F"'] };
+                        mainSheet.getCell(`B${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: ['"Kelas 1,Kelas 2,Kelas 3,Kelas 4,Kelas 5,Kelas 6,Kelas 7,Kelas 8,Kelas 9,Kelas 10,Kelas 11,Kelas 12"']};
+                        mainSheet.getCell(`C${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [`DaftarOpsi!$A$1:$A$${pelajaranOptions.length}`]};
+                    }
+
+                    const buffer = await workbook.xlsx.writeBuffer();
+                    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+a.href = url;
+                    a.download = 'Bangbin_TP_Export.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                } catch (error) {
+                    console.error("Gagal membuat file Excel:", error);
+                    alert("Terjadi kesalahan saat membuat file.");
+                } finally {
+                    button.disabled = false;
+                    button.textContent = originalText;
+                }
+            });
+            
+            // Fungsi impor (diubah untuk memanipulasi `allData`)
+            importBtn.addEventListener('click', () => {
+                if (!importFile.files.length) { alert("Silakan pilih file."); return; }
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = new Uint8Array(event.target.result);
+                        const workbook = new ExcelJS.Workbook();
+                        workbook.xlsx.load(data).then(wb => {
+                            const worksheet = wb.worksheets[0];
+                            const jsonData = [];
+                            const headerRow = worksheet.getRow(1);
+                            if (!headerRow.values) throw new Error("File tidak memiliki header.");
+                            
+                            const headers = headerRow.values.slice(1);
+                            
+                            worksheet.eachRow((row, rowNumber) => {
+                                if (rowNumber > 1) {
+                                    const rowValues = row.values.slice(1);
+                                    const newRowData = {
+                                        fase: rowValues[headers.indexOf('Fase')],
+                                        kelas: String(rowValues[headers.indexOf('Kelas')] || '').replace(/\D/g, ''),
+                                        pelajaran: rowValues[headers.indexOf('Pelajaran')],
+                                        materi: rowValues[headers.indexOf('Materi')],
+                                        tujuan: rowValues[headers.indexOf('Tujuan Pembelajaran')]
+                                    };
+                                    jsonData.push(newRowData);
+                                }
+                            });
+                            
+                            const importMode = document.querySelector('input[name="importMode"]:checked').value;
+                            if (importMode === 'replace') {
+                                allData = jsonData;
+                            } else { // append
+                                allData = allData.concat(jsonData);
+                            }
+                            
+                            recalculateAllIDs();
+                            applyFilters();
+                            closeModal(dataModal);
+                            setStatus("Impor berhasil! Klik 'Simpan' untuk menyimpan perubahan.", false, 5000);
+                        });
+                    } catch (error) {
+                        alert("Gagal memproses file. Error: " + error.message);
+                    }
+                };
+                reader.readAsArrayBuffer(importFile.files[0]);
+            });
+
+            // Memulai aplikasi dengan mengambil data
+            fetchData();
+        });
+    </script>
+</body>
+</html>
