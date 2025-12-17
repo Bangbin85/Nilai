@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAS VA 2025</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/16rll5zsRdwTbR3nF_NmPKwY51tg4tnOn">  
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .grade-card {
+            transition: transform 0.2s;
+        }
+        .grade-card:active {
+            transform: scale(0.98);
+        }
+        /* Loading Spinner */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #3b82f6;
+            width: 24px;
+            height: 24px;
+            -webkit-animation: spin 1s linear infinite; /* Safari */
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Modal Animation */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        body.modal-active {
+            overflow-x: hidden;
+            overflow-y: visible !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Main Container -->
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden relative">
+        
+        <!-- Header -->
+        <div class="bg-blue-600 p-6 text-center text-white relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10">
+                <i class="fa-solid fa-graduation-cap text-9xl -ml-10 -mt-10 absolute"></i>
+            </div>
+            <h1 class="text-2xl font-bold relative z-10"><i class="fa-solid fa-school mr-2"></i>NILAI PAS VA</h1>
+            <p class="text-blue-100 text-sm relative z-10 mt-1">Cek Hasil Belajar Siswa</p>
+        </div>
+
+        <!-- Search Section -->
+        <div class="p-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="nis">
+                Nomor Induk Siswa (NIS)
+            </label>
+            <div class="flex gap-2">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-id-card text-gray-400"></i>
+                    </div>
+                    <input type="number" id="nis" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Masukkan NIS..." onkeypress="handleEnter(event)">
+                </div>
+                <button onclick="cariData()" id="btnCari" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center min-w-[60px]">
+                    <i class="fa-solid fa-magnifying-glass" id="iconCari"></i>
+                    <div class="loader hidden" id="loader"></div>
+                </button>
+            </div>
+            <p class="text-xs text-gray-500 mt-2"><i class="fa-solid fa-circle-info mr-1"></i>Pastikan NIS sesuai dengan data sekolah.</p>
+        </div>
+
+        <!-- Result Section (Hidden by Default) -->
+        <div id="resultSection" class="hidden px-6 pb-6 animate-fade-in-up">
+            <div class="border-t border-gray-100 pt-4">
+                <!-- Student Info -->
+                <div class="text-center mb-6">
+                    <div class="inline-block p-3 rounded-full bg-blue-50 text-blue-600 mb-2">
+                        <i class="fa-solid fa-user-graduate text-2xl"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800" id="namaMurid">Nama Siswa</h2>
+                    <p class="text-gray-500 text-sm">NIS: <span id="displayNIS">12345</span></p>
+                </div>
+
+                <!-- Grades Grid -->
+                <div class="grid grid-cols-2 gap-3" id="gradesContainer">
+                    <!-- Template Item (Filled by JS) -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="bg-gray-50 p-4 text-center text-xs text-gray-400">
+            &copy; 2025 PAS Va
+        </div>
+
+    </div>
+
+    <!-- Custom Modal for Errors (Replaces Alert) -->
+    <div id="errorModal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        
+        <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded-xl shadow-lg z-50 overflow-y-auto transform transition-all scale-95 duration-300">
+            <!-- Header -->
+            <div class="modal-content py-4 text-left px-6">
+                <div class="flex justify-between items-center pb-3">
+                    <p class="text-xl font-bold text-red-600"><i class="fa-solid fa-circle-exclamation mr-2"></i>Perhatian</p>
+                    <div class="modal-close cursor-pointer z-50" onclick="toggleModal()">
+                        <i class="fa-solid fa-xmark text-gray-500 hover:text-red-500"></i>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div class="my-5 text-gray-600" id="modalMessage">
+                    Pesan error disini.
+                </div>
+
+                <!-- Footer -->
+                <div class="flex justify-end pt-2">
+                    <button onclick="toggleModal()" class="px-4 py-2 bg-red-500 p-3 rounded-lg text-white hover:bg-red-600 transition">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Konfigurasi URL Google Apps Script
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykkODs5e1n2SO8zkViH03HEFJm8pS9a3-dWelKls6D1DRdRy8yT96I2aEQ6-qjIWbA/exec';
+
+        // Definisi Mata Pelajaran (Sesuai kolom C-H)
+        const subjects = [
+            { key: 'PP', label: 'Pendidikan Pancasila', icon: 'fa-scale-balanced', color: 'text-red-500 bg-red-50' },
+            { key: 'BI', label: 'Bahasa Indonesia', icon: 'fa-book', color: 'text-green-500 bg-green-50' },
+            { key: 'Mtk', label: 'Matematika', icon: 'fa-calculator', color: 'text-blue-500 bg-blue-50' },
+            { key: 'IPAS', label: 'IPAS', icon: 'fa-flask', color: 'text-purple-500 bg-purple-50' },
+            { key: 'SR', label: 'Seni Rupa', icon: 'fa-palette', color: 'text-pink-500 bg-pink-50' },
+            { key: 'PLBJ', label: 'PLBJ', icon: 'fa-map-location-dot', color: 'text-orange-500 bg-orange-50' }
+        ];
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') {
+                cariData();
+            }
+        }
+
+        function toggleModal(message = '') {
+            const body = document.querySelector('body');
+            const modal = document.getElementById('errorModal');
+            const modalContainer = modal.querySelector('.modal-container');
+            
+            if (message) {
+                document.getElementById('modalMessage').textContent = message;
+            }
+
+            modal.classList.toggle('opacity-0');
+            modal.classList.toggle('pointer-events-none');
+            body.classList.toggle('modal-active');
+
+            if (!modal.classList.contains('opacity-0')) {
+                modalContainer.classList.remove('scale-95');
+                modalContainer.classList.add('scale-100');
+            } else {
+                modalContainer.classList.remove('scale-100');
+                modalContainer.classList.add('scale-95');
+            }
+        }
+
+        async function cariData() {
+            const nisInput = document.getElementById('nis');
+            const nis = nisInput.value.trim();
+            const btn = document.getElementById('btnCari');
+            const icon = document.getElementById('iconCari');
+            const loader = document.getElementById('loader');
+            const resultSection = document.getElementById('resultSection');
+
+            // Reset UI
+            resultSection.classList.add('hidden');
+
+            // Validasi Input
+            if (!nis) {
+                toggleModal("Mohon masukkan NIS terlebih dahulu.");
+                return;
+            }
+
+            // Loading State
+            btn.disabled = true;
+            icon.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            try {
+
+                const response = await fetch(`${SCRIPT_URL}?action=search&nis=${nis}`);
+                
+                if (!response.ok) {
+                    throw new Error('Gagal menghubungi server.');
+                }
+
+                const data = await response.json();
+
+                if (data.status === 'success' || data.result === 'success') {
+                    tampilkanData(data.data); // Asumsi data.data berisi objek siswa
+                } else {
+                    toggleModal(data.message || "Data siswa tidak ditemukan untuk NIS tersebut.");
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+
+                if (window.location.hostname.includes('googleusercontent') || error.message.includes('Failed to fetch')) {
+                     // Simulasi data jika fetch gagal karena pembatasan environment
+                     // Untuk testing logika tampilan
+                    /* console.log("Mode Simulasi Aktif (karena fetch error di preview)");
+                    const mockData = {
+                        nama: "Siswa Simulasi (Fetch Error)",
+                        nis: nis,
+                        nilai: {
+                            PP: 85, BI: 88, Mtk: 90, IPAS: 82, SR: 95, PLBJ: 80
+                        }
+                    };
+                    tampilkanData(mockData);
+                    btn.disabled = false;
+                    icon.classList.remove('hidden');
+                    loader.classList.add('hidden');
+                    return;
+                    */
+                   // End Fallback
+                }
+
+                toggleModal("Terjadi kesalahan koneksi atau data tidak ditemukan. Pastikan URL App Script benar dan diset ke 'Anyone'.");
+            } finally {
+                // Restore Button State
+                btn.disabled = false;
+                icon.classList.remove('hidden');
+                loader.classList.add('hidden');
+            }
+        }
+
+        function tampilkanData(siswa) {
+            document.getElementById('namaMurid').textContent = siswa.nama;
+            document.getElementById('displayNIS').textContent = siswa.nis;
+
+            const container = document.getElementById('gradesContainer');
+            container.innerHTML = ''; // Clear previous
+
+            // Loop subjek untuk membuat kartu nilai
+            subjects.forEach(sub => {
+                // Ambil nilai raw. Cek undefined/null/empty string agar nilai 0 tetap muncul.
+                let rawNilai = siswa.nilai && (siswa.nilai[sub.key] !== undefined && siswa.nilai[sub.key] !== null && siswa.nilai[sub.key] !== "") ? siswa.nilai[sub.key] : '-';
+                
+                // Format ke 2 angka di belakang koma jika itu angka valid
+                let displayNilai = rawNilai;
+                if (rawNilai !== '-' && !isNaN(parseFloat(rawNilai))) {
+                    // toFixed(2) akan membulatkan dan memastikan 2 desimal
+                    displayNilai = parseFloat(rawNilai).toFixed(2);
+                }
+                
+                const card = document.createElement('div');
+                card.className = 'grade-card bg-white border border-gray-200 rounded-xl p-3 flex flex-col items-center justify-center shadow-sm hover:shadow-md';
+                
+                card.innerHTML = `
+                    <div class="w-10 h-10 rounded-full ${sub.color} flex items-center justify-center mb-2">
+                        <i class="fa-solid ${sub.icon}"></i>
+                    </div>
+                    <span class="text-xs text-gray-500 font-medium mb-1">${sub.key}</span>
+                    <span class="text-lg font-bold text-gray-800">${displayNilai}</span>
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('resultSection').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
